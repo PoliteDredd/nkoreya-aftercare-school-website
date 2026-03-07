@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Target, Eye, Heart, Award, Users, BookOpen, Sparkles, CheckCircle } from "lucide-react";
-import classroomImg from "@/assets/classroom.jpeg";
+import sportsdayImg from "@/assets/sports-day.jpeg";
 import libraryImg from "@/assets/library.jpeg";
 
 const values = [
@@ -12,9 +12,10 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2009", title: "School Founded", description: "Started with 150 students and a vision" },
-  { year: "2015", title: "STEM Program", description: "Launched innovative science and technology curriculum" },
-  { year: "2024", title: "500+ Students", description: "Growing community of learners and leaders" },
+  { year: "2024", title: "Programme Founded", description: "Started with 10 students and a vision" },
+  { year: "2025", title: "14 Academic Certificates", description: "awarded to learners for outstanding performance, 3 Medals earned for excellence and top achievement, 3 Trophies received in recognition of exceptional academic results." }, 
+  { year: "2025", title: "Subjects of Excellence", description: "These achievements were attained in: Mathematics, Social Sciences, Natural Sciences, Discipline and Conduct" },
+  { year: "2025", title: "Impact", description: "These milestones reflect Nkoreya Tutoring Services’ commitment to academic excellence, learner development, discipline, and community upliftment. The results demonstrate the effectiveness of our structured support, dedicated mentorship, and focus on holistic growth." },
 ];
 
 const About = () => {
@@ -42,7 +43,7 @@ const About = () => {
                 </p>
               </div>
               <div className="relative">
-                <img src={classroomImg} alt="Our classroom" className="rounded-3xl shadow-2xl" />
+                <img src={sportsdayImg} alt="Our classroom" className="rounded-3xl shadow-2xl" />
                 <div className="absolute -bottom-6 -left-6 bg-card p-6 rounded-2xl shadow-card">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-2xl bg-grass-light flex items-center justify-center">

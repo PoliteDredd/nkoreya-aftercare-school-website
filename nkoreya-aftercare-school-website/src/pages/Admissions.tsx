@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ClipboardList, FileText, UserPlus, CheckCircle, Download, Calendar, Phone, Mail, ArrowRight, LogIn } from "lucide-react";
+import { ClipboardList, FileText, UserPlus, CheckCircle, Calendar, Phone, ArrowRight, LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -35,20 +35,6 @@ const steps = [
     title: "Enrollment Decision",
     description: "Receive your acceptance letter and complete enrollment by paying fees and submitting final documents.",
   },
-];
-
-const documents = [
-  { name: "Application Form", type: "PDF", size: "245 KB" },
-  { name: "Parent Handbook", type: "PDF", size: "1.2 MB" },
-  { name: "Fee Structure 2024-25", type: "PDF", size: "156 KB" },
-  { name: "School Calendar", type: "PDF", size: "320 KB" },
-];
-
-const faqs = [
-  { question: "What is the application deadline?", answer: "We accept applications year-round, but priority enrollment is given to applications received by March 31st for the upcoming academic year." },
-  { question: "Is there an application fee?", answer: "Yes, there is a non-refundable application fee of $50 which covers administrative processing and assessment materials." },
-  { question: "Do you offer financial aid?", answer: "Yes, we offer need-based financial assistance and payment plans. Contact our admissions office for more information." },
-  { question: "What is the student-to-teacher ratio?", answer: "We maintain a 15:1 student-to-teacher ratio to ensure personalized attention for every child." },
 ];
 
 const Admissions = () => {
@@ -175,45 +161,18 @@ const Admissions = () => {
           </div>
         </section>
 
-        {/* Downloadable Forms */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <span className="inline-block bg-secondary/20 text-secondary-foreground px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Resources
-              </span>
-              <h2 className="text-3xl md:text-4xl font-display text-foreground mb-4">
-                Downloadable <span className="text-gradient">Forms</span>
-              </h2>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              {documents.map((doc, index) => (
-                <div key={index} className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-xl bg-coral-light flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <FileText className="w-6 h-6 text-coral" />
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-1">{doc.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{doc.type} • {doc.size}</p>
-                  <Button variant="outline" size="sm" className="w-full group">
-                    <Download className="w-4 h-4" />
-                    Download
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Inquiry Form & FAQs */}
+        {/* Inquiry Form */}
         <section id="inquiry-form" className="py-20 bg-background scroll-mt-24">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="max-w-2xl mx-auto">
               {/* Form */}
               <div>
-                <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  Get Started
-                </span>
-                <h2 className="text-3xl font-display text-foreground mb-6">Submit an Inquiry</h2>
+                <div className="text-center mb-8">
+                  <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    Get Started
+                  </span>
+                  <h2 className="text-3xl font-display text-foreground mb-6">Submit an Inquiry</h2>
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
@@ -285,36 +244,6 @@ const Admissions = () => {
                     <ArrowRight className="w-5 h-5" />
                   </Button>
                 </form>
-              </div>
-
-              {/* FAQs */}
-              <div>
-                <span className="inline-block bg-sunshine/20 text-sunshine px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  FAQs
-                </span>
-                <h2 className="text-3xl font-display text-foreground mb-6">Common Questions</h2>
-                <div className="space-y-4">
-                  {faqs.map((faq, index) => (
-                    <div key={index} className="bg-card p-6 rounded-2xl shadow-soft">
-                      <h3 className="font-semibold text-foreground mb-2">{faq.question}</h3>
-                      <p className="text-muted-foreground text-sm">{faq.answer}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-8 p-6 bg-gradient-to-br from-primary to-lavender rounded-2xl text-primary-foreground">
-                  <h3 className="font-display text-lg mb-2">Have More Questions?</h3>
-                  <p className="text-primary-foreground/80 mb-4">Our admissions team is here to help!</p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <a href="tel:+15551234567" className="flex items-center gap-2 hover:text-secondary transition-colors">
-                      <Phone className="w-4 h-4" />
-                      (+27) 113-072-400
-                    </a>
-                    <a href="mailto:admissions@brightfuture.edu" className="flex items-center gap-2 hover:text-secondary transition-colors">
-                      <Mail className="w-4 h-4" />
-                      katlegongps@lantic.net
-                    </a>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

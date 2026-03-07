@@ -14,29 +14,12 @@ const features = [
     color: "bg-sky-light text-sky",
   },
   {
-    icon: Lightbulb,
-    title: "Creative Learning",
-    description: "Innovative teaching methods that spark curiosity and encourage exploration.",
-    color: "bg-sunshine-light text-sunshine",
-  },
-  {
     icon: Users,
     title: "Small Class Sizes",
     description: "Individual attention with a 15:1 student-to-teacher ratio for personalized learning.",
     color: "bg-lavender-light text-lavender",
   },
-  {
-    icon: Palette,
-    title: "Arts & Expression",
-    description: "Rich programs in music, art, and drama to nurture creative talents.",
-    color: "bg-grass-light text-grass",
-  },
-  {
-    icon: TreePine,
-    title: "Outdoor Learning",
-    description: "Beautiful gardens and play areas for hands-on nature exploration.",
-    color: "bg-sky-light text-sky",
-  },
+ 
 ];
 
 export function Features() {

@@ -4,27 +4,27 @@ import { cn } from "@/lib/utils";
 
 const testimonials = [
   {
-    name: "Sarah Johnson",
-    role: "Parent of Emma (Grade 3)",
-    content: "Nkoreya Tutoring has been a blessing for our family. Emma has flourished academically and socially. The teachers genuinely care about each child's development.",
+    name: "Kidiboni Thobela",
+    role: "Parent of twins Nyiko and Amukelani Thobela (Grade 6)",
+    content: "Grade 6 next year, all thanks to Teacher Nathi and your team",
     rating: 5,
   },
   {
-    name: "Michael Chen",
-    role: "Parent of Lucas (Grade 2)",
-    content: "The school's approach to learning is exceptional. Lucas looks forward to going to school every day. The balance between academics and play is perfect.",
+    name: "Malwande Mtshikane",
+    role: "Parent of Zaloluhle Dyantyi (Grade 2)",
+    content: "From parent's perspective I'd like to extend gratitude, this, I credit to NKOREYA. Let's keep on keeping on!",
     rating: 5,
   },
   {
-    name: "Amanda Williams",
-    role: "Parent of Sophia (Grade 4)",
-    content: "We've seen remarkable growth in Sophia's confidence and creativity. The arts program is outstanding, and the teachers are incredibly supportive.",
+    name: "Noxolo Nxumalo",
+    role: "(Grade 6)",
+    content: "Halala! Teacher Siyabonga!",
     rating: 5,
   },
   {
-    name: "David Rodriguez",
-    role: "Parent of twins (Grade 1)",
-    content: "Having twins in the same school was initially concerning, but Bright Future handled it beautifully. Both kids are thriving with individual attention.",
+    name: "Zanele Mhlafu",
+    role: " (Grade 11)",
+    content: "Hi Sir, nawa ama results wemisebenzi yakho!",
     rating: 5,
   },
 ];

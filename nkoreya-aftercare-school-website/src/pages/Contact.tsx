@@ -1,11 +1,10 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
+import nathiImg from "@/assets/nathi.png";
+import stugImg from "@/assets/stug.jpeg";
+import angelImg from "@/assets/Angel.png";
 
 const contactInfo = [
   {
@@ -23,7 +22,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    details: ["mosengela.nkosinathi02@gmail.com", "admissionskatlegongps@lantic.net"],
+    details: ["mosengela.nkosinathi02@gmail.com", "dlaminitumelo152@gmail.com"],
     color: "bg-sunshine-light text-sunshine",
   },
   {
@@ -35,20 +34,6 @@ const contactInfo = [
 ];
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-  };
-
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -90,19 +75,106 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Map & Form Section */}
+        {/* Meet Our Team Section */}
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="text-center mb-12">
+              <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                Our Team
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display text-foreground mb-4">
+                Meet Our <span className="text-gradient">Team</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Get in touch with our dedicated team members who are here to support your child's learning journey.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {/* Team Member 1 - Nkosinathi */}
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group hover:-translate-y-1">
+                <div className="aspect-square rounded-xl overflow-hidden mb-4">
+                  <img 
+                    src={nathiImg} 
+                    alt="Nkosinathi Mosengela" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="font-display text-xl text-foreground mb-2">Nkosinathi Mosengela</h3>
+                <div className="space-y-2">
+                  <a href="tel:+27717983248" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Phone className="w-4 h-4" />
+                    <span className="text-sm">(+27) 71 798 3248</span>
+                  </a>
+                  <a href="mailto:mosengela.nkosinathi02@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">mosengela.nkosinathi02@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Team Member 2 - Tumelo */}
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group hover:-translate-y-1">
+                <div className="aspect-square rounded-xl overflow-hidden mb-4">
+                  <img 
+                    src={stugImg} 
+                    alt="Tumelo Dlamini" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="font-display text-xl text-foreground mb-2">Tumelo Dlamini</h3>
+                <div className="space-y-2">
+                  <a href="tel:+27683482412" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Phone className="w-4 h-4" />
+                    <span className="text-sm">(+27) 68 348 2412</span>
+                  </a>
+                  <a href="mailto:dlaminitumelo152@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">dlaminitumelo152@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Team Member 3 - Angel */}
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group hover:-translate-y-1">
+                <div className="aspect-square rounded-xl overflow-hidden mb-4">
+                  <img 
+                    src={angelImg} 
+                    alt="Angel" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="font-display text-xl text-foreground mb-2">Angel</h3>
+                <div className="space-y-2">
+                  <a href="tel:+27683482412" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Phone className="w-4 h-4" />
+                    <span className="text-sm">(+27) 68 348 2412</span>
+                  </a>
+                  <a href="mailto:dlaminitumelo152@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">dlaminitumelo152@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Map Section */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
               {/* Map */}
               <div>
-                <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  Location
-                </span>
-                <h2 className="text-3xl font-display text-foreground mb-6">Find Us on the Map</h2>
+                <div className="text-center mb-8">
+                  <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    Location
+                  </span>
+                  <h2 className="text-3xl font-display text-foreground mb-6">Find Us on the Map</h2>
+                </div>
                 <div className="aspect-[4/3] bg-card rounded-3xl shadow-card overflow-hidden">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095919355!2d-74.00425878459375!3d40.74076797932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1629794729807!5m2!1sen!2sus"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3581.8447!2d28.2167!3d-26.3833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9531e8e8e8e8e8%3A0x1234567890abcdef!2sThabang%20Primary%20School%2C%20Inyoni%20Road%20%26%2C%20Thakadu%20Rd%2C%20Vosloorus%20Ext%203%2C%20Vosloorus%2C%20South%20Africa!5e0!3m2!1sen!2sus!4v1629794729807!5m2!1sen!2sus"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
@@ -121,75 +193,6 @@ const Contact = () => {
                     <p className="text-muted-foreground text-sm">Inyoni Road &, Thakadu Rd, Vosloorus Ext 3, Vosloorus, South Africa</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Contact Form */}
-              <div>
-                <span className="inline-block bg-secondary/20 text-secondary-foreground px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  Message Us
-                </span>
-                <h2 className="text-3xl font-display text-foreground mb-6">Send a Quick Inquiry</h2>
-                <form onSubmit={handleSubmit} className="bg-card p-8 rounded-3xl shadow-card space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Your Name *</label>
-                      <Input
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="Full name"
-                        className="rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Email Address *</label>
-                      <Input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="your@email.com"
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
-                      <Input
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="(555) 123-4567"
-                        className="rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Subject *</label>
-                      <Input
-                        required
-                        value={formData.subject}
-                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        placeholder="How can we help?"
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Message *</label>
-                    <Textarea
-                      required
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Write your message here..."
-                      className="rounded-xl min-h-[150px]"
-                    />
-                  </div>
-                  <Button type="submit" variant="hero" size="lg" className="w-full">
-                    <Send className="w-5 h-5" />
-                    Send Message
-                  </Button>
-                </form>
               </div>
             </div>
           </div>
@@ -212,13 +215,13 @@ const Contact = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button variant="hero" size="lg" asChild>
-                    <a href="tel:+15551234567">
+                    <a href="tel:+27717983248">
                       <Phone className="w-5 h-5" />
                       Call Now
                     </a>
                   </Button>
                   <Button variant="outline" size="lg" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
-                    <a href="mailto:info@brightfuture.edu">
+                    <a href="mailto:mosengela.nkosinathi02@gmail.com">
                       <Mail className="w-5 h-5" />
                       Email Us
                     </a>

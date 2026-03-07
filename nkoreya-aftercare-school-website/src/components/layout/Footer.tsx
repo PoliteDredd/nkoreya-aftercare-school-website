@@ -25,15 +25,15 @@ export function Footer() {
               Shaping young minds for a bright future through quality education, care, and creativity since 2024.
             </p>
             <div className="flex gap-4">
-              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 rounded-xl bg-muted/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-                >
-                  <Icon className="w-5 h-5" />
-                </a>
-              ))}
+              <a
+                href="https://www.facebook.com/story.php?story_fbid=122114640717174076&id=61585222303605&rdid=VdN5g4TlryyrvM6G&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fp%2F1b5mK2vwdQ%2F#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-muted/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                aria-label="Visit our Facebook page"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export function Footer() {
                 </li>
                 <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-muted-foreground">mosengela.nkosinathi02@gmail.com</span>
+                <span className="text-muted-foreground">dlaminitumelo152@gmail.com</span>
                 </li>
             </ul>
           </div>

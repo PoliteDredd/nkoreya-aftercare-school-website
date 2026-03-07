@@ -2,16 +2,21 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import tourVideo from "@/assets/tour.mp4";
 
 // Import images properly for Vite
 import classroomImg from "@/assets/classroom.jpeg";
-import playgroundImg from "@/assets/playground.jpg";
-import artClassImg from "@/assets/art-class.jpg";
-import scienceClassImg from "@/assets/science-class.jpg";
 import musicClassImg from "@/assets/music-class.jpeg";
 import sportsImg from "@/assets/sports-day.jpeg";
 import libraryImg from "@/assets/library.jpeg";
 import heroImg from "@/assets/hero-children.jpeg";
+import event01 from "@/assets/event01.jpeg";
+import event03 from "@/assets/event03.jpeg";
+import event04 from "@/assets/event04.jpeg";
+import event05 from "@/assets/event05.jpeg";
+import event06 from "@/assets/event06.jpeg";
+import event07 from "@/assets/event07.jpeg";
+import event08 from "@/assets/event08.jpeg";
 
 const categories = ["All", "Classrooms", "Activities", "Events", "Facilities"];
 
@@ -23,22 +28,10 @@ const galleryImages = [
     alt: "A bright, modern classroom with desks and educational materials"
   },
   { 
-    src: playgroundImg, 
-    title: "Colorful Playground", 
+    src: libraryImg, 
+    title: "School Library", 
     category: "Facilities",
-    alt: "Children playing on a colorful playground with slides and swings"
-  },
-  { 
-    src: artClassImg, 
-    title: "Art Class", 
-    category: "Activities",
-    alt: "Students engaged in creative art activities"
-  },
-  { 
-    src: scienceClassImg, 
-    title: "Science Discovery", 
-    category: "Activities",
-    alt: "Students conducting science experiments"
+    alt: "A well-stocked library with books and reading areas"
   },
   { 
     src: musicClassImg, 
@@ -53,16 +46,52 @@ const galleryImages = [
     alt: "Students participating in sports day activities"
   },
   { 
-    src: libraryImg, 
-    title: "School Library", 
-    category: "Facilities",
-    alt: "A well-stocked library with books and reading areas"
-  },
-  { 
     src: heroImg, 
     title: "Happy Students", 
     category: "Events",
     alt: "Smiling students in their school uniforms"
+  },
+  { 
+    src: event01, 
+    title: "School Event", 
+    category: "Events",
+    alt: "School event celebration"
+  },
+  { 
+    src: event03, 
+    title: "Community Gathering", 
+    category: "Events",
+    alt: "Community gathering event"
+  },
+  { 
+    src: event04, 
+    title: "School Celebration", 
+    category: "Events",
+    alt: "School celebration event"
+  },
+  { 
+    src: event05, 
+    title: "Annual Event", 
+    category: "Events",
+    alt: "Annual school event"
+  },
+  { 
+    src: event06, 
+    title: "School Activity", 
+    category: "Events",
+    alt: "School activity event"
+  },
+  { 
+    src: event07, 
+    title: "Special Program", 
+    category: "Events",
+    alt: "Special school program"
+  },
+  { 
+    src: event08, 
+    title: "School Function", 
+    category: "Events",
+    alt: "School function event"
   },
 ];
 
@@ -70,6 +99,7 @@ const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState<typeof galleryImages[0] | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [showVideo, setShowVideo] = useState(false);
 
   const filteredImages = activeCategory === "All" 
     ? galleryImages 
@@ -208,24 +238,37 @@ const Gallery = () => {
               <span className="inline-block bg-lavender/20 text-lavender px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 Virtual Tour
               </span>
-              <h2 className="text-3xl md:text-4xl font-display text-foreground mb-4">
-                Experience Our <span className="text-gradient">Campus</span>
-              </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Can't visit in person? Take a virtual tour of our beautiful campus and facilities.
+                Can't visit in person? Take a virtual tour.
               </p>
             </div>
             <div className="max-w-4xl mx-auto">
-              <div className="aspect-video bg-card rounded-3xl shadow-card flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-20 h-20 mx-auto rounded-full gradient-hero flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+              <div className="aspect-video bg-card rounded-3xl shadow-card overflow-hidden">
+                {!showVideo ? (
+                  <div 
+                    className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors"
+                    onClick={() => setShowVideo(true)}
+                  >
+                    <div className="text-center p-8">
+                      <div className="w-20 h-20 mx-auto rounded-full gradient-hero flex items-center justify-center mb-4 hover:scale-110 transition-transform">
+                        <svg className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                      <h3 className="font-display text-xl text-foreground mb-2">Virtual Tour</h3>
+                      <p className="text-muted-foreground">Click to watch our Tour-Video</p>
+                    </div>
                   </div>
-                  <h3 className="font-display text-xl text-foreground mb-2">Virtual Campus Tour</h3>
-                  <p className="text-muted-foreground">Click to watch our 5-minute tour video</p>
-                </div>
+                ) : (
+                  <video 
+                    className="w-full h-full"
+                    controls
+                    autoPlay
+                    src={tourVideo}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                )}
               </div>
             </div>
           </div>

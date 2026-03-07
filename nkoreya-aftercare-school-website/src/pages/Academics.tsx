@@ -1,17 +1,13 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BookOpen, Calculator, Microscope, Globe, Palette, Music, Dumbbell, Laptop, Languages, Heart, Brain, TreePine } from "lucide-react";
-import scienceImg from "@/assets/science-class.jpg";
-import artImg from "@/assets/art-class.jpg";
-import musicImg from "@/assets/music-class.jpeg";
 
 const subjects = [
-  { icon: BookOpen, title: "English Language Arts", description: "Reading, writing, grammar, and literature", color: "bg-sky-light text-sky" },
-  { icon: Calculator, title: "Mathematics", description: "Number sense, geometry, and problem-solving", color: "bg-sunshine-light text-sunshine" },
-  { icon: Microscope, title: "Science", description: "Hands-on experiments and discovery learning", color: "bg-grass-light text-grass" },
-  { icon: Globe, title: "Social Studies", description: "History, geography, and civic education", color: "bg-coral-light text-coral" },
-  { icon: Dumbbell, title: "Physical Education", description: "Sports and healthy habits", color: "bg-grass-light text-grass" },
-  { icon: Laptop, title: "Technology", description: "Digital literacy", color: "bg-sunshine-light text-sunshine" },
+  { icon: BookOpen, title: "English Language", description: "Our English classes focus on improving reading, writing, spelling, and comprehension skills. Learners build confidence in communication, grammar, and understanding texts, helping them perform better in school and everyday life.", color: "bg-sky-light text-sky" },
+  { icon: Calculator, title: "Mathematics", description: "Mathematics lessons strengthen problem-solving, number skills, and logical thinking. We help learners understand concepts step by step, build accuracy, and gain confidence in calculations and mathematical reasoning.", color: "bg-sunshine-light text-sunshine" },
+  { icon: Microscope, title: "Science", description: "Physical Science classes introduce learners to basic scientific concepts through explanation and practice. We focus on understanding natural phenomena, developing curiosity, and building a strong foundation in science and analytical thinking.", color: "bg-grass-light text-grass" },
+  { icon: Globe, title: "South African Home Languages", description: "These lessons support learners in developing speaking, reading, and writing skills in their home language. The classes promote cultural understanding, vocabulary growth, and effective communication.", color: "bg-coral-light text-coral" },
+  { icon: Laptop, title: "Computer Literacy", description: "Computer classes teach basic computer skills, including typing, using educational software, internet safety, and basic digital literacy. Learners gain essential skills needed for schoolwork and future careers.", color: "bg-sunshine-light text-sunshine" },
 ];
 
 const approaches = [
@@ -39,17 +35,19 @@ const gradePrograms = [
     focus: "Foundation skills, social development, and love of learning",
     subjects: ["Phonics", "Basic Math", "Art", "Music", "Play-based Learning"],
   },
-  {
-    level: "Lower Elementary",
-    ages: "Grades 1-2",
-    focus: "Building core literacy and numeracy skills",
-    subjects: ["Reading", "Writing", "Math", "Science", "Social Skills"],
-  },
+  
   {
     level: "Upper Elementary",
-    ages: "Grades 3-7",
+    ages: "Grades 8-12",
     focus: "Advanced academics and critical thinking",
     subjects: ["Literature", "Advanced Math", "Science Labs", "Research Skills", "Technology"],
+  },
+
+  {
+    level: "Lower Elementary",
+    ages: "Grades 1-7",
+    focus: "Building core literacy and numeracy skills",
+    subjects: ["Reading", "Writing", "Math", "Science", "Social Skills"],
   },
 ];
 
@@ -166,35 +164,6 @@ const Academics = () => {
           </div>
         </section>
 
-        {/* Special Programs Gallery */}
-        <section className="py-20 bg-gradient-to-br from-sky-light to-lavender-light">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <span className="inline-block bg-lavender/20 text-lavender px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                Enrichment
-              </span>
-              <h2 className="text-3xl md:text-4xl font-display text-foreground mb-4">
-                Beyond the <span className="text-gradient">Classroom</span>
-              </h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { img: scienceImg, title: "History Trips", desc: "Exploring the history around the area" },
-                { img: artImg, title: "Sports", desc: "Partipance in fitness and games" },
-                { img: musicImg, title: "Nature Tours", desc: "Exploring nature around the school" },
-              ].map((item, index) => (
-                <div key={index} className="group relative rounded-3xl overflow-hidden shadow-card">
-                  <img src={item.img} alt={item.title} className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="font-display text-xl text-secondary mb-1">{item.title}</h3>
-                    <p className="text-muted-foreground">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>

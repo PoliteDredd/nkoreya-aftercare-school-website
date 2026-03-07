@@ -2,18 +2,12 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import classroomImg from "@/assets/classroom.jpeg";
-import playgroundImg from "@/assets/playground.jpg";
-import artClassImg from "@/assets/art-class.jpg";
-import scienceClassImg from "@/assets/science-class.jpg";
-import musicClassImg from "@/assets/music-class.jpeg";
+import event04Img from "@/assets/event04.jpeg";
+import libraryImg from "@/assets/library.jpeg";
 
 const slides = [
-  { image: classroomImg, title: "Modern Classrooms", description: "Bright, engaging learning spaces" },
-  { image: playgroundImg, title: "Safe Playground", description: "Where fun and fitness meet" },
-  { image: artClassImg, title: "Creative Arts", description: "Expressing imagination freely" },
-  { image: scienceClassImg, title: "Science Discovery", description: "Hands-on learning experiences" },
-  { image: musicClassImg, title: "Music & Movement", description: "Rhythm in every heart" },
+  { image: event04Img, title: "School Events", description: "Celebrating moments together" },
+  { image: libraryImg, title: "Learning Space", description: "Where knowledge comes alive" },
 ];
 
 export function ImageCarousel() {
