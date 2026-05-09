@@ -70,29 +70,33 @@ export default function ParentDashboard() {
   }, [user]);
 
   const fetchData = async () => {
-    try {
-      const [appsResult, notifResult] = await Promise.all([
-        supabase
-          .from('applications')
-          .select('*')
-          .eq('user_id', user?.id)
-          .order('created_at', { ascending: false }),
-        supabase
-          .from('notifications')
-          .select('*')
-          .eq('user_id', user?.id)
-          .order('created_at', { ascending: false })
-          .limit(10),
-      ]);
+  if (!user?.id) return;
 
-      if (appsResult.data) setApplications(appsResult.data as Application[]);
-      if (notifResult.data) setNotifications(notifResult.data as Notification[]);
-    } catch (error) {
-      toast.error('Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const [appsResult, notifResult] = await Promise.all([
+      supabase
+        .from('applications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false }),
+
+      supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10),
+    ]);
+
+    if (appsResult.data) setApplications(appsResult.data as Application[]);
+    if (notifResult.data) setNotifications(notifResult.data as Notification[]);
+
+  } catch (error) {
+    toast.error('Failed to load dashboard data');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const subscribeToNotifications = () => {
     const channel = supabase

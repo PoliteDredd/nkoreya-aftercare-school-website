@@ -1,17 +1,27 @@
--- Complete Database Setup for School Application System
--- Copy and paste this entire file into your Supabase SQL Editor
+-- Setup only the missing tables and configurations
+-- Run this in Supabase SQL Editor
 
--- Create enum for user roles
-CREATE TYPE public.app_role AS ENUM ('admin', 'principal', 'applicant');
+-- Create enum types (skip if they already exist)
+DO $$ BEGIN
+  CREATE TYPE public.app_role AS ENUM ('admin', 'principal', 'applicant');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
--- Create enum for application status
-CREATE TYPE public.application_status AS ENUM ('submitted', 'under_review', 'approved', 'rejected', 'waitlisted', 'more_info_requested');
+DO $$ BEGIN
+  CREATE TYPE public.application_status AS ENUM ('submitted', 'under_review', 'approved', 'rejected', 'waitlisted', 'more_info_requested');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
--- Create enum for grade levels
-CREATE TYPE public.grade_level AS ENUM ('pre_k', 'kindergarten', 'grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6');
+DO $$ BEGIN
+  CREATE TYPE public.grade_level AS ENUM ('pre_k', 'kindergarten', 'grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- Create profiles table
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
   full_name TEXT,
@@ -20,17 +30,8 @@ CREATE TABLE public.profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create user_roles table
-CREATE TABLE public.user_roles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  role app_role NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE (user_id, role)
-);
-
--- Create applications table with comprehensive fields
-CREATE TABLE public.applications (
+-- Create applications table
+CREATE TABLE IF NOT EXISTS public.applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   
@@ -88,18 +89,18 @@ CREATE TABLE public.applications (
 );
 
 -- Create application documents table
-CREATE TABLE public.application_documents (
+CREATE TABLE IF NOT EXISTS public.application_documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE NOT NULL,
-  document_type TEXT NOT NULL, -- birth_certificate, transcripts, medical_records, etc.
+  document_type TEXT NOT NULL,
   file_name TEXT NOT NULL,
   file_path TEXT NOT NULL,
   file_size INTEGER,
   uploaded_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create admin notes table (internal only)
-CREATE TABLE public.application_notes (
+-- Create admin notes table
+CREATE TABLE IF NOT EXISTS public.application_notes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE NOT NULL,
   admin_id UUID REFERENCES auth.users(id) NOT NULL,
@@ -108,7 +109,7 @@ CREATE TABLE public.application_notes (
 );
 
 -- Create status history table
-CREATE TABLE public.application_status_history (
+CREATE TABLE IF NOT EXISTS public.application_status_history (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE NOT NULL,
   old_status application_status,
@@ -119,12 +120,12 @@ CREATE TABLE public.application_status_history (
 );
 
 -- Create notifications table
-CREATE TABLE public.notifications (
+CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
-  type TEXT NOT NULL, -- status_change, info_requested, etc.
+  type TEXT NOT NULL,
   read BOOLEAN DEFAULT FALSE,
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -139,8 +140,8 @@ ALTER TABLE public.application_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.application_status_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
--- Security definer function to check roles
-CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
+-- Create helper functions
+CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role TEXT)
 RETURNS BOOLEAN
 LANGUAGE SQL
 STABLE
@@ -150,11 +151,10 @@ AS $$
   SELECT EXISTS (
     SELECT 1
     FROM public.user_roles
-    WHERE user_id = _user_id AND role = _role
+    WHERE user_id = _user_id AND role::text = _role
   )
 $$;
 
--- Function to check if user is admin or principal
 CREATE OR REPLACE FUNCTION public.is_admin_or_principal(_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE SQL
@@ -165,11 +165,38 @@ AS $$
   SELECT EXISTS (
     SELECT 1
     FROM public.user_roles
-    WHERE user_id = _user_id AND role IN ('admin', 'principal')
+    WHERE user_id = _user_id AND role::text IN ('admin', 'principal')
   )
 $$;
 
--- Profiles policies
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Admins can view all profiles" ON public.profiles;
+
+DROP POLICY IF EXISTS "Users can view own applications" ON public.applications;
+DROP POLICY IF EXISTS "Users can create own applications" ON public.applications;
+DROP POLICY IF EXISTS "Users can update own pending applications" ON public.applications;
+DROP POLICY IF EXISTS "Admins can view all applications" ON public.applications;
+DROP POLICY IF EXISTS "Admins can update all applications" ON public.applications;
+
+DROP POLICY IF EXISTS "Users can view own documents" ON public.application_documents;
+DROP POLICY IF EXISTS "Users can upload own documents" ON public.application_documents;
+DROP POLICY IF EXISTS "Admins can view all documents" ON public.application_documents;
+
+DROP POLICY IF EXISTS "Admins can view notes" ON public.application_notes;
+DROP POLICY IF EXISTS "Admins can create notes" ON public.application_notes;
+
+DROP POLICY IF EXISTS "Users can view own status history" ON public.application_status_history;
+DROP POLICY IF EXISTS "Admins can view all status history" ON public.application_status_history;
+DROP POLICY IF EXISTS "Admins can insert status history" ON public.application_status_history;
+
+DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
+DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
+DROP POLICY IF EXISTS "System can create notifications" ON public.notifications;
+
+-- Create policies
 CREATE POLICY "Users can view own profile" ON public.profiles
   FOR SELECT USING (auth.uid() = id);
 
@@ -182,17 +209,6 @@ CREATE POLICY "Users can insert own profile" ON public.profiles
 CREATE POLICY "Admins can view all profiles" ON public.profiles
   FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
 
--- User roles policies
-CREATE POLICY "Users can view own roles" ON public.user_roles
-  FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Admins can view all roles" ON public.user_roles
-  FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
-
-CREATE POLICY "Admins can manage roles" ON public.user_roles
-  FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-
--- Applications policies
 CREATE POLICY "Users can view own applications" ON public.applications
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -208,7 +224,6 @@ CREATE POLICY "Admins can view all applications" ON public.applications
 CREATE POLICY "Admins can update all applications" ON public.applications
   FOR UPDATE USING (public.has_role(auth.uid(), 'admin'));
 
--- Application documents policies
 CREATE POLICY "Users can view own documents" ON public.application_documents
   FOR SELECT USING (
     EXISTS (
@@ -228,14 +243,12 @@ CREATE POLICY "Users can upload own documents" ON public.application_documents
 CREATE POLICY "Admins can view all documents" ON public.application_documents
   FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
 
--- Application notes policies (admin only)
 CREATE POLICY "Admins can view notes" ON public.application_notes
   FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
 
 CREATE POLICY "Admins can create notes" ON public.application_notes
   FOR INSERT WITH CHECK (public.has_role(auth.uid(), 'admin'));
 
--- Status history policies
 CREATE POLICY "Users can view own status history" ON public.application_status_history
   FOR SELECT USING (
     EXISTS (
@@ -250,7 +263,6 @@ CREATE POLICY "Admins can view all status history" ON public.application_status_
 CREATE POLICY "Admins can insert status history" ON public.application_status_history
   FOR INSERT WITH CHECK (public.has_role(auth.uid(), 'admin'));
 
--- Notifications policies
 CREATE POLICY "Users can view own notifications" ON public.notifications
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -260,28 +272,6 @@ CREATE POLICY "Users can update own notifications" ON public.notifications
 CREATE POLICY "System can create notifications" ON public.notifications
   FOR INSERT WITH CHECK (TRUE);
 
--- Create storage bucket for application documents
-INSERT INTO storage.buckets (id, name, public) VALUES ('application-documents', 'application-documents', FALSE);
-
--- Storage policies
-CREATE POLICY "Users can upload own documents" ON storage.objects
-  FOR INSERT WITH CHECK (
-    bucket_id = 'application-documents' AND 
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-CREATE POLICY "Users can view own documents" ON storage.objects
-  FOR SELECT USING (
-    bucket_id = 'application-documents' AND 
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-CREATE POLICY "Admins can view all documents" ON storage.objects
-  FOR SELECT USING (
-    bucket_id = 'application-documents' AND 
-    public.is_admin_or_principal(auth.uid())
-  );
-
 -- Function to handle new user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
@@ -290,17 +280,19 @@ SECURITY DEFINER SET search_path = public
 AS $$
 BEGIN
   INSERT INTO public.profiles (id, email, full_name)
-  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name');
+  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name')
+  ON CONFLICT (id) DO NOTHING;
   
-  -- By default, new users are applicants
   INSERT INTO public.user_roles (user_id, role)
-  VALUES (NEW.id, 'applicant');
+  VALUES (NEW.id, 'applicant')
+  ON CONFLICT (user_id, role) DO NOTHING;
   
   RETURN NEW;
 END;
 $$;
 
--- Trigger for new user signup
+-- Drop trigger if exists and recreate
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
@@ -314,15 +306,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at
+-- Drop triggers if exist and recreate
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_applications_updated_at ON public.applications;
 CREATE TRIGGER update_applications_updated_at
   BEFORE UPDATE ON public.applications
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
-
--- Enable realtime for notifications
-ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.applications;

@@ -1,13 +1,36 @@
--- Complete Database Setup for School Application System
--- Copy and paste this entire file into your Supabase SQL Editor
+-- STEP 1: Drop everything and start fresh
+-- WARNING: This will delete all existing data!
 
--- Create enum for user roles
+-- Drop triggers first
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
+DROP TRIGGER IF EXISTS update_applications_updated_at ON public.applications;
+
+-- Drop functions
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+DROP FUNCTION IF EXISTS public.update_updated_at_column() CASCADE;
+DROP FUNCTION IF EXISTS public.has_role(UUID, TEXT) CASCADE;
+DROP FUNCTION IF EXISTS public.is_admin_or_principal(UUID) CASCADE;
+
+-- Drop tables (in reverse order of dependencies)
+DROP TABLE IF EXISTS public.notifications CASCADE;
+DROP TABLE IF EXISTS public.application_status_history CASCADE;
+DROP TABLE IF EXISTS public.application_notes CASCADE;
+DROP TABLE IF EXISTS public.application_documents CASCADE;
+DROP TABLE IF EXISTS public.applications CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
+DROP TABLE IF EXISTS public.user_roles CASCADE;
+
+-- Drop enums
+DROP TYPE IF EXISTS public.grade_level CASCADE;
+DROP TYPE IF EXISTS public.application_status CASCADE;
+DROP TYPE IF EXISTS public.app_role CASCADE;
+
+-- STEP 2: Create everything fresh
+
+-- Create enum types
 CREATE TYPE public.app_role AS ENUM ('admin', 'principal', 'applicant');
-
--- Create enum for application status
 CREATE TYPE public.application_status AS ENUM ('submitted', 'under_review', 'approved', 'rejected', 'waitlisted', 'more_info_requested');
-
--- Create enum for grade levels
 CREATE TYPE public.grade_level AS ENUM ('pre_k', 'kindergarten', 'grade_1', 'grade_2', 'grade_3', 'grade_4', 'grade_5', 'grade_6');
 
 -- Create profiles table
@@ -29,7 +52,7 @@ CREATE TABLE public.user_roles (
   UNIQUE (user_id, role)
 );
 
--- Create applications table with comprehensive fields
+-- Create applications table
 CREATE TABLE public.applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
@@ -91,14 +114,14 @@ CREATE TABLE public.applications (
 CREATE TABLE public.application_documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE NOT NULL,
-  document_type TEXT NOT NULL, -- birth_certificate, transcripts, medical_records, etc.
+  document_type TEXT NOT NULL,
   file_name TEXT NOT NULL,
   file_path TEXT NOT NULL,
   file_size INTEGER,
   uploaded_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create admin notes table (internal only)
+-- Create admin notes table
 CREATE TABLE public.application_notes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE NOT NULL,
@@ -124,7 +147,7 @@ CREATE TABLE public.notifications (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
-  type TEXT NOT NULL, -- status_change, info_requested, etc.
+  type TEXT NOT NULL,
   read BOOLEAN DEFAULT FALSE,
   application_id UUID REFERENCES public.applications(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -139,8 +162,8 @@ ALTER TABLE public.application_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.application_status_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
--- Security definer function to check roles
-CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
+-- Create helper functions
+CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role TEXT)
 RETURNS BOOLEAN
 LANGUAGE SQL
 STABLE
@@ -150,11 +173,10 @@ AS $$
   SELECT EXISTS (
     SELECT 1
     FROM public.user_roles
-    WHERE user_id = _user_id AND role = _role
+    WHERE user_id = _user_id AND role::text = _role
   )
 $$;
 
--- Function to check if user is admin or principal
 CREATE OR REPLACE FUNCTION public.is_admin_or_principal(_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE SQL
@@ -165,7 +187,7 @@ AS $$
   SELECT EXISTS (
     SELECT 1
     FROM public.user_roles
-    WHERE user_id = _user_id AND role IN ('admin', 'principal')
+    WHERE user_id = _user_id AND role::text IN ('admin', 'principal')
   )
 $$;
 
@@ -228,7 +250,7 @@ CREATE POLICY "Users can upload own documents" ON public.application_documents
 CREATE POLICY "Admins can view all documents" ON public.application_documents
   FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
 
--- Application notes policies (admin only)
+-- Application notes policies
 CREATE POLICY "Admins can view notes" ON public.application_notes
   FOR SELECT USING (public.is_admin_or_principal(auth.uid()));
 
@@ -260,28 +282,6 @@ CREATE POLICY "Users can update own notifications" ON public.notifications
 CREATE POLICY "System can create notifications" ON public.notifications
   FOR INSERT WITH CHECK (TRUE);
 
--- Create storage bucket for application documents
-INSERT INTO storage.buckets (id, name, public) VALUES ('application-documents', 'application-documents', FALSE);
-
--- Storage policies
-CREATE POLICY "Users can upload own documents" ON storage.objects
-  FOR INSERT WITH CHECK (
-    bucket_id = 'application-documents' AND 
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-CREATE POLICY "Users can view own documents" ON storage.objects
-  FOR SELECT USING (
-    bucket_id = 'application-documents' AND 
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-CREATE POLICY "Admins can view all documents" ON storage.objects
-  FOR SELECT USING (
-    bucket_id = 'application-documents' AND 
-    public.is_admin_or_principal(auth.uid())
-  );
-
 -- Function to handle new user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
@@ -292,7 +292,6 @@ BEGIN
   INSERT INTO public.profiles (id, email, full_name)
   VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'full_name');
   
-  -- By default, new users are applicants
   INSERT INTO public.user_roles (user_id, role)
   VALUES (NEW.id, 'applicant');
   
@@ -323,6 +322,10 @@ CREATE TRIGGER update_applications_updated_at
   BEFORE UPDATE ON public.applications
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
--- Enable realtime for notifications
-ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.applications;
+-- STEP 3: Re-add admin user role
+-- Replace 'YOUR_ADMIN_EMAIL' with admin@school.com
+INSERT INTO public.user_roles (user_id, role)
+SELECT id, 'admin'::app_role
+FROM auth.users 
+WHERE email = 'admin@school.com'
+ON CONFLICT (user_id, role) DO NOTHING;

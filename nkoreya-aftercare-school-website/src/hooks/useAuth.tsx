@@ -24,23 +24,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState<UserRole[]>([]);
 
-  const fetchUserRoles = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId);
-      
-      if (!error && data) {
-        setRoles(data.map(r => r.role as UserRole));
-      } else if (error) {
-        console.error('Error fetching user roles:', error);
-        setRoles([]);
-      }
-    } catch (error) {
-      console.error('Error in fetchUserRoles:', error);
+const fetchUserRoles = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId);
+
+    console.log("Fetched roles:", data);
+
+    if (error) {
+      console.error("Error fetching user roles:", error);
       setRoles([]);
+      return;
     }
+
+    const roles = data?.map((r) => r.role as UserRole) || [];
+    setRoles(roles);
+
+  } catch (error) {
+    console.error("Error in fetchUserRoles:", error);
+    setRoles([]);
+  }
   };
 
   useEffect(() => {

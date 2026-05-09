@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Supabase Connection</title>
+</head>
+<body>
+    <h1>Supabase Connection Test</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result"></div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        const SUPABASE_URL = 'https://fbhkbwlmkoudhljiapna.supabase.co'
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiaGtid2xta291ZGhsamlhcG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MTI0MDksImV4cCI6MjA4NTA4ODQwOX0.9n3E98-INgOAroN8AHHlKlLH-op12EXkJYid7P8BVOA'
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+        window.testConnection = async function() {
+            const resultDiv = document.getElementById('result')
+            resultDiv.innerHTML = 'Testing connection...'
+            
+            try {
+                // Test 1: Check if we can reach Supabase
+                const response = await fetch(SUPABASE_URL + '/rest/v1/')
+                resultDiv.innerHTML += '<br>✅ Can reach Supabase URL'
+                
+                // Test 2: Try to sign up a test user
+                const { data, error } = await supabase.auth.signUp({
+                    email: 'test@example.com',
+                    password: 'test123456'
+                })
+                
+                if (error) {
+                    resultDiv.innerHTML += '<br>❌ Signup error: ' + error.message
+                } else {
+                    resultDiv.innerHTML += '<br>✅ Signup works! (or user already exists)'
+                }
+            } catch (err) {
+                resultDiv.innerHTML += '<br>❌ Connection failed: ' + err.message
+            }
+        }
+    </script>
+</body>
+</html>
