@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  rolesLoading: boolean;
   roles: UserRole[];
   isAdmin: boolean;
   isPrincipal: boolean;
@@ -22,41 +23,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [rolesLoading, setRolesLoading] = useState(false);
   const [roles, setRoles] = useState<UserRole[]>([]);
 
-const fetchUserRoles = async (userId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId);
+  const fetchUserRoles = async (userId: string) => {
+    setRolesLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId);
 
-    console.log("Fetched roles:", data);
+      if (error) {
+        console.error("Error fetching user roles:", error);
+        setRoles([]);
+        return;
+      }
 
-    if (error) {
-      console.error("Error fetching user roles:", error);
+      const fetchedRoles = data?.map((r) => r.role as UserRole) || [];
+      setRoles(fetchedRoles);
+    } catch (error) {
+      console.error("Error in fetchUserRoles:", error);
       setRoles([]);
-      return;
+    } finally {
+      setRolesLoading(false);
     }
-
-    const roles = data?.map((r) => r.role as UserRole) || [];
-    setRoles(roles);
-
-  } catch (error) {
-    console.error("Error in fetchUserRoles:", error);
-    setRoles([]);
-  }
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Defer Supabase calls with setTimeout to avoid deadlock
           setTimeout(() => {
             fetchUserRoles(session.user.id);
           }, 0);
@@ -67,7 +67,6 @@ const fetchUserRoles = async (userId: string) => {
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -111,6 +110,7 @@ const fetchUserRoles = async (userId: string) => {
       user,
       session,
       loading,
+      rolesLoading,
       roles,
       isAdmin,
       isPrincipal,

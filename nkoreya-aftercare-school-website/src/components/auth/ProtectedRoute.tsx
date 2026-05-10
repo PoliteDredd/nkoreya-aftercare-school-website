@@ -9,10 +9,11 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-  const { user, loading, isAdmin, isPrincipal } = useAuth();
+  const { user, loading, rolesLoading, isAdmin, isPrincipal } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  // Wait for auth and roles to finish loading
+  if (loading || (user && rolesLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
