@@ -17,7 +17,6 @@ import ParentDashboard from "./pages/ParentDashboard";
 import ApplicationForm from "./pages/ApplicationForm";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminApplicationReview from "./pages/AdminApplicationReview";
-import AdminInquiries from "./pages/AdminInquiries";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,9 +45,6 @@ const App = () => (
             } />
             <Route path="/admin/dashboard" element={
               <ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>
-            } />
-            <Route path="/admin/inquiries" element={
-              <ProtectedRoute requireAdmin><AdminInquiries /></ProtectedRoute>
             } />
             <Route path="/admin/applications/:id" element={
               <ProtectedRoute requireAdmin><AdminApplicationReview /></ProtectedRoute>

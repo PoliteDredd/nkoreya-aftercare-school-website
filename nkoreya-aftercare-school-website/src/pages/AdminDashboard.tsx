@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import {
   LayoutDashboard, Users, FileText, Bell, Settings, LogOut, Search,
   Clock, CheckCircle, XCircle, AlertCircle, ChevronRight, Eye, Calendar,
-  Filter, Download, MessageSquare
+  Filter, Download
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col">
         <div className="p-6 border-b border-slate-700">
-          <h1 className="font-display text-xl">Bright Future</h1>
+          <h1 className="font-display text-xl">Nkoreya Tutoring</h1>
           <p className="text-slate-400 text-sm">Admin Portal</p>
         </div>
 
@@ -148,15 +148,6 @@ export default function AdminDashboard() {
               >
                 <FileText className="w-5 h-5" />
                 Applications
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/admin/inquiries"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800"
-              >
-                <MessageSquare className="w-5 h-5" />
-                Inquiries
               </Link>
             </li>
           </ul>

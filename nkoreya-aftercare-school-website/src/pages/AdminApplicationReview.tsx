@@ -132,20 +132,36 @@ export default function AdminApplicationReview() {
   };
 
   const fetchNotes = async () => {
-    const { data } = await supabase
-      .from('application_notes')
-      .select('*')
-      .eq('application_id', id)
-      .order('created_at', { ascending: false });
-    if (data) setNotes(data as AdminNote[]);
+    try {
+      const { data, error } = await supabase
+        .from('application_notes')
+        .select('*')
+        .eq('application_id', id)
+        .order('created_at', { ascending: false });
+      if (error) {
+        console.error('Failed to fetch notes:', error.message);
+        return;
+      }
+      if (data) setNotes(data as AdminNote[]);
+    } catch (err) {
+      console.error('Error fetching notes:', err);
+    }
   };
 
   const fetchDocuments = async () => {
-    const { data } = await supabase
-      .from('application_documents')
-      .select('*')
-      .eq('application_id', id);
-    if (data) setDocuments(data as Document[]);
+    try {
+      const { data, error } = await supabase
+        .from('application_documents')
+        .select('*')
+        .eq('application_id', id);
+      if (error) {
+        console.error('Failed to fetch documents:', error.message);
+        return;
+      }
+      if (data) setDocuments(data as Document[]);
+    } catch (err) {
+      console.error('Error fetching documents:', err);
+    }
   };
 
   const updateStatus = async (newStatus: ApplicationStatus) => {
