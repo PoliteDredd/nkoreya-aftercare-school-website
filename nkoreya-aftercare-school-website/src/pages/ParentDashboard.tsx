@@ -65,42 +65,44 @@ export default function ParentDashboard() {
   useEffect(() => {
     if (user) {
       fetchData();
-      subscribeToNotifications();
+      const cleanup = subscribeToNotifications();
+      return cleanup;
     }
   }, [user]);
 
   const fetchData = async () => {
-  if (!user?.id) return;
+    if (!user?.id) return;
+    try {
+      const [appsResult, notifResult] = await Promise.all([
+        supabase
+          .from('applications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(10),
+      ]);
 
-  try {
-    const [appsResult, notifResult] = await Promise.all([
-      supabase
-        .from('applications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false }),
-
-      supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(10),
-    ]);
-
-    if (appsResult.data) setApplications(appsResult.data as Application[]);
-    if (notifResult.data) setNotifications(notifResult.data as Notification[]);
-
-  } catch (error) {
-    toast.error('Failed to load dashboard data');
-  } finally {
-    setLoading(false);
-  }
-};
+      if (appsResult.data) setApplications(appsResult.data as Application[]);
+      if (notifResult.error) {
+        console.error('Notifications fetch error:', notifResult.error.message);
+      } else if (notifResult.data) {
+        setNotifications(notifResult.data as Notification[]);
+      }
+    } catch (error) {
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const subscribeToNotifications = () => {
     const channel = supabase
-      .channel('notifications')
+      .channel(`notifications-${user?.id}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user?.id}` },
