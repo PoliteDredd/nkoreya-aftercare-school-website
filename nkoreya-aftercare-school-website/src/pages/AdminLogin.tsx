@@ -195,11 +195,6 @@ export default function AdminLogin() {
             <p className="text-muted-foreground text-sm">
               Bright Future Primary School - Administration
             </p>
-            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-xs text-blue-700">
-                <strong>Admin Login:</strong> admin@school.com / admin123456
-              </p>
-            </div>
           </div>
 
           {/* Form */}
