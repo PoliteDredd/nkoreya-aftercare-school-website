@@ -1,13 +1,8 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ClipboardList, FileText, UserPlus, CheckCircle, Calendar, Phone, ArrowRight, LogIn } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { ClipboardList, FileText, UserPlus, CheckCircle, Calendar, Phone, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   {
@@ -38,55 +33,6 @@ const steps = [
 ];
 
 const Admissions = () => {
-  const [formData, setFormData] = useState({
-    parentName: "",
-    email: "",
-    phone: "",
-    childName: "",
-    gradeApplying: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { error } = await supabase
-        .from('inquiries')
-        .insert({
-          parent_name: formData.parentName,
-          email: formData.email,
-          phone: formData.phone,
-          child_name: formData.childName,
-          grade_applying: formData.gradeApplying,
-          message: formData.message || null,
-          status: 'new'
-        });
-
-      if (error) {
-        console.error('Error submitting inquiry:', error);
-        toast.error('Failed to submit inquiry. Please try again.');
-      } else {
-        toast.success("Thank you for your inquiry! We'll contact you within 24 hours.");
-        setFormData({ 
-          parentName: "", 
-          email: "", 
-          phone: "", 
-          childName: "", 
-          gradeApplying: "", 
-          message: "" 
-        });
-      }
-    } catch (error) {
-      console.error('Error submitting inquiry:', error);
-      toast.error('Failed to submit inquiry. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -157,94 +103,6 @@ const Admissions = () => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Inquiry Form */}
-        <section id="inquiry-form" className="py-20 bg-background scroll-mt-24">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto">
-              {/* Form */}
-              <div>
-                <div className="text-center mb-8">
-                  <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                    Get Started
-                  </span>
-                  <h2 className="text-3xl font-display text-foreground mb-6">Submit an Inquiry</h2>
-                </div>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Parent/Guardian Name *</label>
-                      <Input
-                        required
-                        value={formData.parentName}
-                        onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
-                        placeholder="Your full name"
-                        className="rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Email Address *</label>
-                      <Input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="your@email.com"
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
-                      <Input
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="(555) 123-4567"
-                        className="rounded-xl"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Child's Name *</label>
-                      <Input
-                        required
-                        value={formData.childName}
-                        onChange={(e) => setFormData({ ...formData, childName: e.target.value })}
-                        placeholder="Child's full name"
-                        className="rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Grade Applying For *</label>
-                    <Input
-                      required
-                      value={formData.gradeApplying}
-                      onChange={(e) => setFormData({ ...formData, gradeApplying: e.target.value })}
-                      placeholder="e.g., Kindergarten, Grade 1"
-                      className="rounded-xl"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Additional Message</label>
-                    <Textarea
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Any questions or additional information..."
-                      className="rounded-xl min-h-[120px]"
-                    />
-                  </div>
-                  <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
-                    <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </form>
-              </div>
             </div>
           </div>
         </section>

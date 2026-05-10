@@ -193,7 +193,7 @@ export default function AdminLogin() {
               Staff Portal
             </h1>
             <p className="text-muted-foreground text-sm">
-              Bright Future Primary School - Administration
+              Nkoreya Tutoring Services
             </p>
           </div>
 
