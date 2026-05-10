@@ -81,13 +81,20 @@ export default function AdminDashboard() {
 
   const subscribeToUpdates = () => {
     const channel = supabase
-      .channel('admin-applications')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'applications' },
-        () => fetchApplications()
-      )
-      .subscribe();
+  .channel("admin-applications")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "applications",
+    },
+    payload => {
+      console.log(payload)
+    }
+  )
+  .subscribe()
+
 
     return () => supabase.removeChannel(channel);
   };
