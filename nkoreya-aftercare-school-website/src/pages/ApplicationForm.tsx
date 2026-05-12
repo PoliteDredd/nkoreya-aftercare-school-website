@@ -176,8 +176,20 @@ export default function ApplicationForm() {
         file_path: doc.path,
       }));
 
+      console.log('Uploading doc records:', docRecords);
+
       if (docRecords.length > 0) {
-        await supabase.from('application_documents').insert(docRecords);
+        const { error: docError } = await supabase
+          .from('application_documents')
+          .insert(docRecords);
+        if (docError) {
+          console.error('Document insert failed:', docError.message);
+          toast.error('Documents failed to save: ' + docError.message);
+        } else {
+          console.log('Documents saved successfully');
+        }
+      } else {
+        console.log('No documents to save - uploadedDocs:', uploadedDocs);
       }
 
       // Create notification for parent
