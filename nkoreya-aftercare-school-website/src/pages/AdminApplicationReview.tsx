@@ -158,7 +158,8 @@ export default function AdminApplicationReview() {
         console.error('Failed to fetch documents:', error.message);
         return;
       }
-      if (data) setDocuments(data as Document[]);
+      console.log('Documents fetched:', data);
+      setDocuments((data as Document[]) || []);
     } catch (err) {
       console.error('Error fetching documents:', err);
     }
@@ -544,12 +545,14 @@ export default function AdminApplicationReview() {
             </div>
 
             {/* Documents */}
-            {documents.length > 0 && (
-              <div className="bg-white rounded-xl p-6 shadow-sm border">
-                <h2 className="font-semibold text-slate-900 flex items-center gap-2 mb-4">
-                  <FileText className="w-5 h-5 text-primary" />
-                  Uploaded Documents
-                </h2>
+            <div className="bg-white rounded-xl p-6 shadow-sm border">
+              <h2 className="font-semibold text-slate-900 flex items-center gap-2 mb-4">
+                <FileText className="w-5 h-5 text-primary" />
+                Uploaded Documents
+              </h2>
+              {documents.length === 0 ? (
+                <p className="text-sm text-slate-500">No documents uploaded yet.</p>
+              ) : (
                 <div className="space-y-2">
                   {documents.map((doc) => (
                     <div
@@ -568,8 +571,8 @@ export default function AdminApplicationReview() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Sidebar */}

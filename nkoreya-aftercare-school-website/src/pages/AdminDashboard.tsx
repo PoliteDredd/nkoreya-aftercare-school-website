@@ -60,7 +60,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchApplications();
-    subscribeToUpdates();
+    const cleanup = subscribeToUpdates();
+    return cleanup;
   }, []);
 
   const fetchApplications = async () => {
@@ -81,22 +82,15 @@ export default function AdminDashboard() {
 
   const subscribeToUpdates = () => {
     const channel = supabase
-  .channel("admin-applications")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "applications",
-    },
-    payload => {
-      console.log(payload)
-    }
-  )
-  .subscribe()
+      .channel(`admin-applications-${Date.now()}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'applications' },
+        () => fetchApplications()
+      )
+      .subscribe();
 
-
-    return () => supabase.removeChannel(channel);
+    return () => { supabase.removeChannel(channel); };
   };
 
   const handleLogout = async () => {
